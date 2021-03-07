@@ -6,7 +6,7 @@ const MeetupList = ({ meetups }) => {
     <ul className={s.list}>
       {meetups.map((meetup) => (
         <MeetupItem
-          key={meetup.is}
+          key={meetup.id}
           id={meetup.id}
           image={meetup.image}
           title={meetup.title}
