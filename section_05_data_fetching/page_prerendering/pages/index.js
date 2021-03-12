@@ -12,6 +12,7 @@ const HomePage = ({ products }) => {
 };
 
 export const getStaticProps = async () => {
+  console.log("ReGenerating ...");
   const filePath = path.join(process.cwd(), "data", "dummy.json");
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
@@ -19,6 +20,7 @@ export const getStaticProps = async () => {
     props: {
       products: data.products,
     },
+    revalidate: 10,
   };
 };
 
