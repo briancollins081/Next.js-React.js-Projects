@@ -26,6 +26,11 @@ export const getStaticProps = async (context) => {
   } = context;
   const products = await getData();
   const product = products.find((p) => p.id == pid);
+  if (!product) {
+    return {
+      notFound: true,
+    };
+  }
   return {
     props: {
       product,
@@ -40,8 +45,8 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
-    // fallback: true, //Generate only needed pages - needs a fallback check
+    // fallback: false,
+    fallback: true, //Generate only needed pages - needs a fallback check
     // fallback: 'blocking'
   };
 };
