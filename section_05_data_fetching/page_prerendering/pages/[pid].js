@@ -2,6 +2,9 @@ import path from "path";
 import fs from "fs/promises";
 
 const ProductDetails = ({ product }) => {
+  if (!product) {
+    return <div>Loading Product...</div>;
+  }
   return (
     <>
       <h1>Product Title: {product.title}</h1>
@@ -29,10 +32,10 @@ export const getStaticPaths = () => {
   return {
     paths: [
       { params: { pid: "p1" } },
-      { params: { pid: "p2" } },
-      { params: { pid: "p3" } },
+      //   { params: { pid: "p2" } },
+      //   { params: { pid: "p3" } },
     ],
-    fallback: false,
+    fallback: true, //Generate only needed pages
   };
 };
 
