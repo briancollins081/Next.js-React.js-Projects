@@ -13,13 +13,18 @@ const ProductDetails = ({ product }) => {
   );
 };
 
+const getData = async () => {
+  const filePath = path.join(process.cwd(), "data", "dummy.json");
+  const jsonData = await fs.readFile(filePath);
+  const { products } = JSON.parse(jsonData);
+  return products;
+};
+
 export const getStaticProps = async (context) => {
   const {
     params: { pid },
   } = context;
-  const filePath = path.join(process.cwd(), "data", "dummy.json");
-  const jsonData = await fs.readFile(filePath);
-  const { products } = JSON.parse(jsonData);
+  const products = await getData();
   const product = products.find((p) => p.id == pid);
   return {
     props: {
@@ -28,14 +33,16 @@ export const getStaticProps = async (context) => {
   };
 };
 
-export const getStaticPaths = () => {
+export const getStaticPaths = async () => {
+  const products = await getData();
+  const ids = products.map((p) => p.id);
+  const paths = ids.map((id) => ({ params: { pid: id } }));
+
   return {
-    paths: [
-      { params: { pid: "p1" } },
-      //   { params: { pid: "p2" } },
-      //   { params: { pid: "p3" } },
-    ],
-    fallback: true, //Generate only needed pages
+    paths,
+    fallback: false,
+    // fallback: true, //Generate only needed pages - needs a fallback check
+    // fallback: 'blocking'
   };
 };
 
