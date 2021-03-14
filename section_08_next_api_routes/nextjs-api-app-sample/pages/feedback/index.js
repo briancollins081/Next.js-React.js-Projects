@@ -1,14 +1,30 @@
+import { useState } from "react";
 import { getFeedbackData, createFeedbackPath } from "../api/feedback";
 
 const Feedback = ({ feedbacks }) => {
+  const [feedbackData, setFeedbackData] = useState();
+  const handleShowFeedbackDetails = (e, id) => {
+    fetch(`/api/feedback/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setFeedbackData(data.feedback);
+      });
+  };
   return (
-    <div>
+    <>
+      {feedbackData && <p>{feedbackData.email}</p>}
       <ul>
         {feedbacks.map((f) => (
-          <li key={f.id}>{f.text}</li>
+          <li key={f.id}>
+            {f.text}&nbsp;
+            <button onClick={(e) => handleShowFeedbackDetails(e, f.id)}>
+              show details
+            </button>
+          </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 };
 
@@ -17,7 +33,6 @@ export const getStaticProps = async () => {
   return {
     props: {
       feedbacks: data,
-      
     },
   };
 };

@@ -14,7 +14,7 @@ const handler = (req, res) => {
   if (req.method === "POST") {
     const { email, text } = req.body;
     const feedback = {
-      id: new Date().toLocaleString(),
+      id: new Date().getTime(),
       email,
       text,
     };
