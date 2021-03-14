@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Button from "../ui/button";
 import DateIcon from "../icons/date-icon";
 
@@ -18,7 +19,8 @@ const EventItem = ({ title, image, date, location, id }) => {
 
   return (
     <li className={s.item}>
-      <img src={"/" + image} alt={title} />
+      <Image src={"/" + image} alt={title} width={240} height={160} />
+      {/* <img src={"/" + image} alt={title} /> */}
       <div className={s.content}>
         <div className={s.summary}>
           <h2>{title}</h2>
