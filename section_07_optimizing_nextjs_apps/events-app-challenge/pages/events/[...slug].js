@@ -5,8 +5,8 @@ import useSWR from "swr";
 import EventList from "../../components/events/event-list";
 import ResultsTitle from "../../components/results-title/results-title";
 import ErrorAlert from "../../components/error-alert/error-alert";
-// import { getFilteredEvents } from "../../dummydata";
 import Button from "../../components/ui/button";
+// import { getFilteredEvents } from "../../dummydata";
 // import fetchFilteredEvents from "../../data/fetchFilteredEvents";
 
 const FilteredEvents = (/* {
@@ -31,13 +31,34 @@ const FilteredEvents = (/* {
     }
   }, [data]);
 
+  let pageHead = (
+    <Head>
+      <title>All Events - Filtered</title>
+      <meta name="description" content={`All events filtered ABC Events`} />
+    </Head>
+  );
+
   const router = useRouter();
   const filterData = router.query.slug;
-  if (!filterData) {
-    return <p className="center">Loading...</p>;
+  if (!filterData || !data) {
+    return (
+      <>
+        {pageHead}
+        <p className="center">Loading...</p>
+      </>
+    );
   }
   const filterByYear = Number(filterData[0]);
   const filterByMonth = Number(filterData[1]);
+  pageHead = (
+    <Head>
+      <title>All Events - Filtered</title>
+      <meta
+        name="description"
+        content={`All events for ${filterByYear}/${filterByMonth}`}
+      />
+    </Head>
+  );
   if (
     isNaN(filterByYear) ||
     isNaN(filterByMonth) ||
@@ -47,6 +68,7 @@ const FilteredEvents = (/* {
   ) {
     return (
       <>
+        {pageHead}
         <ErrorAlert>
           <p className="center">Invalid filters. Please adjust your values!</p>
         </ErrorAlert>
@@ -67,6 +89,7 @@ const FilteredEvents = (/* {
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <>
+        {pageHead}
         <ErrorAlert>
           <p className="center">No events found for the choosen filter!</p>
         </ErrorAlert>
@@ -79,13 +102,7 @@ const FilteredEvents = (/* {
   const date = new Date(filterByYear, filterByMonth - 1);
   return (
     <>
-      <Head>
-        <title>All Events-Filtered</title>
-        <meta
-          name="description"
-          content={`All events for ${filterByYear}/${filterByMonth}`}
-        />
-      </Head>
+      {pageHead}
       <ResultsTitle date={date} />
       <EventList events={filteredEvents} />
     </>
