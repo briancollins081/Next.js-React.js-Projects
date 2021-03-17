@@ -37,8 +37,11 @@ const handler = async (req, res) => {
       break;
     //get req
     case "GET":
-      const comments = await db.collection("events-comments").find().toArray();
-      console.log(JSON.stringify(comments));
+      const comments = await db
+        .collection("events-comments")
+        .find({eventId})
+        .sort({ _id: -1 })
+        .toArray();
       // client.close();
       res.status(200).json({
         message: "Comments",
@@ -46,7 +49,6 @@ const handler = async (req, res) => {
       });
       break;
   }
-  client.close();
 };
 
 export default handler;
