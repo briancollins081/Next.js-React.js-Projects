@@ -1,7 +1,20 @@
-import { CONNECT_TO_CLIENT } from "../../../helpers/db-client";
+import {
+  CONNECT_TO_CLIENT,
+  findDocuments,
+  insertDocument,
+} from "../../../helpers/db-client";
 
 const handler = async (req, res) => {
-  const { client, db } = await CONNECT_TO_CLIENT();
+  let client, db;
+  try {
+    const connection = await CONNECT_TO_CLIENT();
+    client = connection.client;
+    db = connection.db;
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Connection to the database failed!" });
+  }
   const { eventId } = req.query;
   switch (req.method) {
     case "POST":
@@ -22,10 +35,18 @@ const handler = async (req, res) => {
         comment,
         author: { email, name },
       };
+      let result;
+      try {
+        result = await insertDocument(db, "events-comments", newComment);
+        // await db
+        //   .collection("events-comments")
+        //   .insertOne(newComment);
+      } catch (error) {
+        return res
+          .status(500)
+          .json({ message: "Failed inserting new comment!" });
+      }
 
-      const result = await db
-        .collection("events-comments")
-        .insertOne(newComment);
       newComment.id = result.insertedId;
       console.log({ newComment });
       // client.close();
@@ -37,18 +58,22 @@ const handler = async (req, res) => {
       break;
     //get req
     case "GET":
-      const comments = await db
-        .collection("events-comments")
-        .find({eventId})
-        .sort({ _id: -1 })
-        .toArray();
-      // client.close();
+      let comments;
+      try {
+        comments = await findDocuments(db, "events-comments", { eventId }, -1);
+        // await db.collection("").find({ eventId }).sort({ _id: -1 }).toArray();
+        // client.close();
+      } catch (error) {
+        return res.status(500).json({ message: "Fetching documents failed!" });
+      }
+
       res.status(200).json({
         message: "Comments",
         comments: comments,
       });
       break;
   }
+  // client.close();
 };
 
 export default handler;

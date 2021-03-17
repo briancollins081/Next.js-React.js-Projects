@@ -1,4 +1,4 @@
-import { CONNECT_TO_CLIENT } from "../../helpers/db-client";
+import { CONNECT_TO_CLIENT, insertDocument } from "../../helpers/db-client";
 
 const handler = async (req, res) => {
   switch (req.method) {
@@ -11,9 +11,24 @@ const handler = async (req, res) => {
       ) {
         return res.status(422).json({ message: "Invalid email" });
       }
-      const { client, db } = await CONNECT_TO_CLIENT();
-      await db.collection("emails").insertOne({ email });
-      client.close();
+      let client, db;
+      try {
+        const connection = await CONNECT_TO_CLIENT();
+        client = connection.client;
+        db = connection.db;
+      } catch (error) {
+        return res
+          .status(500)
+          .json({ message: "Error conecting to database!" });
+      }
+
+      try {
+        // await db.collection("emails").insertOne({ email });
+        insertDocument(db, "emails", { email });
+        client.close();
+      } catch (error) {
+        return res.status(500).json({ message: "Error inserting document!" });
+      }
 
       res.status(201).json({
         message: "Registration successful",
