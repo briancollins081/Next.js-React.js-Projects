@@ -1,9 +1,18 @@
-import PostContent from "../../components/posts/post-detail/post-content";
+import Head from "next/head";
 
+import PostContent from "../../components/posts/post-detail/post-content";
 import { getPostData, getPostsFiles } from "../../libs/posts-util";
 
 const PostDetails = ({ post }) => {
-  return <PostContent post={post} />;
+  return (
+    <>
+      <Head>
+        <title>{post.title}</title>
+        <meta name="description" content={post.excerpt} />
+      </Head>
+      <PostContent post={post} />
+    </>
+  );
 };
 
 export default PostDetails;
