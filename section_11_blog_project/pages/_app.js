@@ -5,6 +5,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <Layout>
       <Component {...pageProps} />
+      <div id="notifications"></div>
     </Layout>
   );
 }
