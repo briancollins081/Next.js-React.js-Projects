@@ -51,7 +51,7 @@ const ContactForm = () => {
     notification = {
       status: "pending",
       title: "Sending your message...",
-      message: "Do not worry, your mesage is way...",
+      message: "Do not worry, your mesage is on the way...",
     };
   } else if (reqStatus === "error") {
     notification = {
@@ -63,7 +63,7 @@ const ContactForm = () => {
     notification = {
       status: "success",
       title: "Sent success",
-      message: "Message sent successfully!",
+      message: "Message sent successfully!!!",
     };
   }
   return (
