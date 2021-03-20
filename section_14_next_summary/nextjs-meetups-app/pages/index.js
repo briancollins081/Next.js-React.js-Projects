@@ -18,8 +18,18 @@ const MEETUPS = [
     description: "This is a second meetup of time...",
   },
 ];
-const Home = () => {
-  return <MeetupList meetups={MEETUPS} />;
+const Home = ({ meetups }) => {
+  return <MeetupList meetups={meetups} />;
+};
+
+export const getStaticProps = async (context) => {
+  // Get Data
+  return {
+    props: {
+      meetups: MEETUPS,
+    },
+    // revalidate: 3600
+  };
 };
 
 export default Home;
