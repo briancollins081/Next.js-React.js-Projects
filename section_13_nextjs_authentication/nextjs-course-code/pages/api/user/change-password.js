@@ -16,13 +16,13 @@ const handler = async (req, res) => {
   const usersCollection = client.db().collection("users");
   const existingUser = await usersCollection.findOne({ email: userEmail });
   if (!existingUser) {
-    client.close();
+    // client.close();
     return res.status(404).json({ message: "User not found!" });
   }
   const currentPassword = existingUser.password;
   const matchedPass = await verifyPassword(oldpassword, currentPassword);
   if (!matchedPass) {
-    client.close();
+    // client.close();
     res.status(403).json({ message: "Current password do not match!" });
   }
   const hPassword = await hashPassword(newpassword);
@@ -30,7 +30,7 @@ const handler = async (req, res) => {
     { email: userEmail },
     { $set: { password: hPassword } }
   );
-  client.close();
+//   client.close();
   res.status(200).json({ message: "Password updated successfully!" });
 };
 
