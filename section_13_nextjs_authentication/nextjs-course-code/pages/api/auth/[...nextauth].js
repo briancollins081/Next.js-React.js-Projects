@@ -16,8 +16,8 @@ export default NextAuth({
           email: credentials.email,
         });
         if (!user) {
-          throw new Error("User not found!");
           client.close();
+          throw new Error("User not found!");
         }
 
         const pwdIsValid = await verifyPassword(
@@ -25,8 +25,8 @@ export default NextAuth({
           user.password
         );
         if (!pwdIsValid) {
-          throw new Error("Invalid credentials, check your email/password");
           client.close();
+          throw new Error("Invalid credentials, check your email/password");
         }
         client.close();
         return { email: user.email };
