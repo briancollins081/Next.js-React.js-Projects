@@ -1,37 +1,46 @@
+import { MongoClient, ObjectID } from "mongodb";
+
 import MeetupDetail from "../../components/meetups/MeetupDetail";
 
-const SingleMeetup = () => {
+const SingleMeetup = ({ meetup }) => {
   return (
     <MeetupDetail
-      image={
-        "https://images.unsplash.com/photo-1545906785-38f53f99e380?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80"
-      }
-      title={"First meetup"}
-      address={"Some address, city, street"}
-      description={"Meetup description goes here"}
+      image={meetup.image}
+      title={meetup.title}
+      address={meetup.address}
+      description={meetup.description}
     />
   );
+};
+const dbConnectGetMeetupCollection = async () => {
+  const client = await MongoClient.connect(
+    `mongodb+srv://andere:TXpNi42JMj6aCIXZ@cluster0.l4l3f.mongodb.net/meetups?retryWrites=true&w=majority`
+  );
+  const db = client.db();
+  return db.collection("meetups");
 };
 
 export const getStaticProps = async (context) => {
   const { meetupId } = context.params;
-  console.log({ meetupId });
+  const meetupsCollection = await dbConnectGetMeetupCollection();
+  const existingMeetup = await meetupsCollection.findOne({
+    _id: new ObjectID(meetupId),
+  });
+  existingMeetup._id = existingMeetup._id.toString();
+
   return {
-    props: {
-      id: meetupId,
-      image:
-        "https://images.unsplash.com/photo-1545906785-38f53f99e380?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
-      title: "First meetup",
-      address: "Some address, city, street",
-      description: "Meetup description goes here",
-    },
+    props: { meetup: existingMeetup },
   };
 };
 export const getStaticPaths = async () => {
+  const meetupsCollection = await dbConnectGetMeetupCollection();
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+
   return {
-    paths: [{ params: { meetupId: "m1" } }, { params: { meetupId: "m2" } }],
+    paths: meetups.map((m) => ({ params: { meetupId: m._id.toString() } })),
+    // paths: [{ params: { meetupId: "m1" } }, { params: { meetupId: "m2" } }],
     // fallback: true
-    fallback: false
+    fallback: false,
   };
 };
 export default SingleMeetup;
