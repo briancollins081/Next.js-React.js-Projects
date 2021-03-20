@@ -32,4 +32,11 @@ export const getStaticProps = async (context) => {
   };
 };
 
+/* export const getServerSideProps = async (context) => {
+  const { req, res } = context;
+  return {
+    props: { meetups: MEETUPS },
+  };
+}; */
+
 export default Home;
