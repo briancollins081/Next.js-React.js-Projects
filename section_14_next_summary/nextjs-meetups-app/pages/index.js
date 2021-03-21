@@ -31,7 +31,7 @@ export const getStaticProps = async (context) => {
         id: m._id.toString(),
       })),
     },
-    // revalidate: 3600
+    revalidate: 1
   };
 };
 
