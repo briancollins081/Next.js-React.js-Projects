@@ -1,15 +1,22 @@
+import Head from "next/head";
 import { MongoClient, ObjectID } from "mongodb";
 
 import MeetupDetail from "../../components/meetups/MeetupDetail";
 
 const SingleMeetup = ({ meetup }) => {
   return (
-    <MeetupDetail
-      image={meetup.image}
-      title={meetup.title}
-      address={meetup.address}
-      description={meetup.description}
-    />
+    <>
+      <Head>
+        <title>{meetup.title}</title>
+        <meta name="description" content={meetup.description} />
+      </Head>
+      <MeetupDetail
+        image={meetup.image}
+        title={meetup.title}
+        address={meetup.address}
+        description={meetup.description}
+      />
+    </>
   );
 };
 const dbConnectGetMeetupCollection = async () => {
@@ -39,8 +46,9 @@ export const getStaticPaths = async () => {
   return {
     paths: meetups.map((m) => ({ params: { meetupId: m._id.toString() } })),
     // paths: [{ params: { meetupId: "m1" } }, { params: { meetupId: "m2" } }],
-    // fallback: true
-    fallback: false,
+    // fallback: true - return an ampty page first loading
+    // fallback: false,
+    fallback: 'blocking', //- waits for data to be loaded
   };
 };
 export default SingleMeetup;
